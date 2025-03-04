@@ -1,0 +1,14 @@
+const mongoose = require('mongoose');
+
+const adminSchema = mongoose.Schema({
+    adminType : {type : String,require : true},
+    name : {type : String,require : true},
+    email : {type : String,require : true},
+    phoneNumber : {type : String,require : true},
+    password: {type: String, required:true},
+    avatar:{type: String , default: "uploads/defaultt.jpg"},
+    token : {type:String}
+},{timestamps: true})
+
+
+module.exports = mongoose.model('admins', adminSchema);
