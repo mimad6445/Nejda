@@ -40,6 +40,7 @@ const registerUser = async(req,res)=>{
         
         res.status(201).json({ status: httpStatusText.SUCCESS, data: { addNewuser }});
     } catch (error) {
+        console.log("error",error);
         res.status(500).json({status: httpStatusText.ERROR, message: 'Internal server error',error: error});
     }
 }
