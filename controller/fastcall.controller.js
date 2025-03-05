@@ -15,10 +15,11 @@ const createFastCall = async (req, res) => {
         const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : "";
         const videoFile = req.files["video"] ? req.files["video"][0].filename : "";
         
-        if(!imageFiles && !vocalFile && !videoFile){
+        if(!req.files["image"] && !req.files["vocal"] && !req.files["video"] && req.body.description){
             res.status(400).json({status : httpStatusText.FAIL, message: "there is No files enterd",});
         }
         const newFastCall = new FastCall({
+            description : req.body.description,
             image: imageFiles,
             vocal: vocalFile,
             video: videoFile
