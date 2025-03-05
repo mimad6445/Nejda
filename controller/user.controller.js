@@ -34,8 +34,8 @@ const registerUser = async(req,res)=>{
         const hashedPassword = await bcrypt.hash(password,10);
         const addNewuser = new userdb({fullName,phoneNumber,email,password:hashedPassword,image: req.file ? req.file.filename : null,});
         
-        const token = await generateToken({ email:email,phoneNumber,fullName , id: addNewuser._id})
-        addNewuser.token = token;
+        // const token = await generateToken({ email:email,phoneNumber,fullName , id: addNewuser._id})
+        // addNewuser.token = token;
         await addNewuser.save();
         
         res.status(201).json({ status: httpStatusText.SUCCESS, data: { addNewuser }});
@@ -60,7 +60,7 @@ const login = async(req,res)=>{
         if(!passwordCompare){
             res.status(404).json({ status: httpStatusText.FAIL, message: "password not much" });
         }
-        const token = await generateToken({email: email , id: user._id, role : "user"});
+        // const token = await generateToken({email: email , id: user._id, role : "user"});
         await userdb.findByIdAndUpdate(user._id, { token });
         res.status(200).json({status: httpStatusText.SUCCESS, data: {email : email,token : token}})
     } catch (error) {
