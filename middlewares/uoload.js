@@ -4,7 +4,7 @@ const path = require("path");
 // Configure Multer Storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/"); // Ensure this folder exists
+        cb(null, "uploads/");
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    limits: { fileSize: 10 * 1024 * 1024 }, 
 }).fields([
     { name: "image", maxCount: 5 },
     { name: "vocal", maxCount: 1 },
