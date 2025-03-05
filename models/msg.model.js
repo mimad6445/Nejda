@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 
 const msgSchema = mongoose.Schema({
-    qstModel : [{
-        qst : {type : mongoose.Types.ObjectId , ref : 'qst'},
-        response : {type : String}
-    }],
+    emergencyType: {
+        type: String,
+        enum: ['جريمة قتل', 'اعتداء', 'اختطاف', 'حريق', 'حادث', 'مرض', 'حالة نفسية', 'حالة اخرى'],
+        required: true
+    },
+    msg : {type : String},
+    injured : {type : Boolean, require : true},
+    inTheSence : {type : Boolean, require : true},
 },{timestamps: true})
 
 msgSchema.post("findOneAndDelete", async function (doc) {

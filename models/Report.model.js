@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 
 const RaportSchema = mongoose.Schema({
     description : {type : String},
-    image : [{type : String}],
-    vocal : {type : String},
-    video : {type : String},
 },{timestamps: true})
 
 RaportSchema.post("findOneAndDelete", async function (doc) {

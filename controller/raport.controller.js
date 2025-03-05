@@ -1,33 +1,43 @@
-const Raport = require("../models/raport");
-
+const Raport = require("../models/Report.model");
+const userdb = require("../models/user.model")
+const httpStatusText = require("../utils/httpStatusText");
+const emergencyModel = require("../models/emergency.model");
 // Create Raport
 const createRaport = async (req, res) => {
     try {
-        const imageFiles = req.files["image"] ? req.files["image"].map(file => file.filename) : [];
-        const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : "";
-        const videoFile = req.files["video"] ? req.files["video"][0].filename : "";
+        const io = req.app.get('socketio');
+        const userid = req.params.userid;
+        const user = await userdb.findById(userid);
+            if(!user){
+                res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
+            }
 
         const newRaport = new Raport({
             description: req.body.description,
-            image: imageFiles,
-            vocal: vocalFile,
-            video: videoFile
         });
-
+        const newEmergency = new emergencyModel({
+            emergencyType : "raport",
+            report : newRaport._id,
+            user : userid
+        })
+        user.emergencies.push(newEmergency._id);
+        await user.save();
+        await newEmergency.save();
         await newRaport.save();
-        res.status(201).json({ message: "Raport created successfully", data: newRaport });
+        io.emit('newFact', newRaport);
+        res.status(201).json({status : httpStatusText.SUCCESS, message: "Raport created successfully", data: newRaport });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
 // Get All Raports
 const getAllRaports = async (req, res) => {
     try {
-        const raports = await Raport.find().sort({ createdAt: -1 });
-        res.status(200).json({ data: raports });
+        const raports = await Raport.find().lean();
+        res.status(200).json({status : httpStatusText.SUCCESS, data: raports });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -35,11 +45,11 @@ const getAllRaports = async (req, res) => {
 const getRaportById = async (req, res) => {
     try {
         const raport = await Raport.findById(req.params.id);
-        if (!raport) return res.status(404).json({ error: "Raport not found" });
+        if (!raport) return res.status(404).json({status : httpStatusText.FAIL, error: "Raport not found" });
 
-        res.status(200).json({ data: raport });
+        res.status(200).json({status : httpStatusText.SUCCESS, data: raport });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -47,7 +57,7 @@ const getRaportById = async (req, res) => {
 const updateRaport = async (req, res) => {
     try {
         const raport = await Raport.findById(req.params.id);
-        if (!raport) return res.status(404).json({ error: "Raport not found" });
+        if (!raport) return res.status(404).json({status : httpStatusText.FAIL, error: "Raport not found" });
 
         const imageFiles = req.files["image"] ? req.files["image"].map(file => file.filename) : raport.image;
         const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : raport.vocal;
@@ -59,9 +69,9 @@ const updateRaport = async (req, res) => {
         raport.video = videoFile;
 
         await raport.save();
-        res.status(200).json({ message: "Raport updated successfully", data: raport });
+        res.status(200).json({status : httpStatusText.SUCCESS, message: "Raport updated successfully", data: raport });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -69,18 +79,35 @@ const updateRaport = async (req, res) => {
 const deleteRaport = async (req, res) => {
     try {
         const raport = await Raport.findByIdAndDelete(req.params.id);
-        if (!raport) return res.status(404).json({ error: "Raport not found" });
+        if (!raport) return res.status(404).json({status : httpStatusText.FAIL, error: "Raport not found" });
 
-        res.status(200).json({ message: "Raport deleted successfully" });
+        res.status(200).json({status : httpStatusText.SUCCESS, message: "Raport deleted successfully" });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
+
+const getRaportByUser = async (req, res) => {
+    try {
+        const { userid } = req.params;
+
+        const raports = await emergencyModel.find({ user: userid , emergencyType : "raport" }).lean();
+
+        if (!raports.length) {
+            return res.status(404).json({status : httpStatusText.FAIL, message: "No Raports found for this user" });
+        }
+
+        res.status(200).json({status : httpStatusText.SUCCESS, data: raports });
+    } catch (error) {
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+    }
+}
 
 module.exports = {
     createRaport,
     getAllRaports,
     getRaportById,
     updateRaport,
-    deleteRaport
+    deleteRaport,
+    getRaportByUser
 };

@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const raportController = require("../controller/raport.controller");
-const upload = require("../middlewares/uoload");
 
 router.route("/")
-    .post(upload, raportController.createRaport)
     .get(raportController.getAllRaports);
 
+router.route('/:userid')
+        .post(raportController.createRaport)
+        .get(raportController.getRaportByUser);
+
 router.route("/:id")
-    .patch(upload, raportController.updateRaport)
+    .patch(raportController.updateRaport)
     .get(raportController.getRaportById)
     .delete(raportController.deleteRaport);
 

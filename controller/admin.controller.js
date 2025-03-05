@@ -1,4 +1,4 @@
-const admindb = require("../models/auth/admin.model");
+const admindb = require("../models/admin.model");
 const httpStatusText = require("../utils/httpStatusText")
 const bcrypt = require("bcryptjs")
 

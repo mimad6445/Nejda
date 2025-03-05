@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const emergencySchema = mongoose.Schema({
-    emergencyType : {type : String,require : true},
+    emergencyType :  {type : String, enum: ['fastcall', 'raport','msg']},
+    Needs : {type : String, enum: ['الشرطة', 'الدرك', 'إسعاف']},
     fastcall : {type : mongoose.Types.ObjectId , ref : 'fastcall'},
     msg : {type : mongoose.Types.ObjectId , ref : 'msg'},
     report : {type : mongoose.Types.ObjectId , ref : 'raport'},
-    user : {type : mongoose.Types.ObjectId , ref : 'users', require : True}
+    user : {type : mongoose.Types.ObjectId , ref : 'users', require : true}
 },{timestamps: true})
 
 emergencySchema.post("findOneAndDelete", async function (doc) {

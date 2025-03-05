@@ -5,35 +5,37 @@ const emergencyModel = require("../models/emergency.model");
 // Create FastCall
 const createFastCall = async (req, res) => {
     try {
-        const userid = req.params.id;
-
-        const user = await userdb.findById(userid).lean();
+        const userid = req.params.userid;
+        const io = req.app.get('socketio');
+        const user = await userdb.findById(userid);
             if(!user){
                 res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
             }
+        
         const imageFiles = req.files["image"] ? req.files["image"].map(file => file.filename) : [];
         const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : "";
         const videoFile = req.files["video"] ? req.files["video"][0].filename : "";
         
-        if(!req.files["image"] && !req.files["vocal"] && !req.files["video"] && req.body.description){
-            res.status(400).json({status : httpStatusText.FAIL, message: "there is No files enterd",});
-        }
+        
         const newFastCall = new FastCall({
-            description : req.body.description,
             image: imageFiles,
             vocal: vocalFile,
             video: videoFile
         });
         
         const newEmergency = new emergencyModel({
-            emergencyType : "0",
+            emergencyType : "fastcall",
             fastcall : newFastCall._id,
             user : userid
         })
+        user.emergencies.push(newEmergency._id);
+        await user.save();
         await newEmergency.save();
         await newFastCall.save();
+        io.emit('newFact', newFastCall);
         res.status(201).json({status :httpStatusText.SUCCESS, message: "FastCall created successfully", data: newFastCall });
     } catch (error) {
+        console.log(error);
         res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
@@ -64,7 +66,7 @@ const getFastCallById = async (req, res) => {
 const updateFastCall = async (req, res) => {
     try {
         const fastCall = await FastCall.findById(req.params.id);
-        if (!fastCall) return res.status(404).json({ error: "FastCall not found" });
+        if (!fastCall) return res.status(404).json({status : httpStatusText.FAIL, error: "FastCall not found" });
 
         if(!fastCall.image) fastCall.image = [];
         if(!fastCall.vocal) fastCall.vocal = "";
@@ -79,9 +81,9 @@ const updateFastCall = async (req, res) => {
         fastCall.video = videoFile;
 
         await fastCall.save();
-        res.status(200).json({ message: "FastCall updated successfully", data: fastCall });
+        res.status(200).json({status : httpStatusText.SUCCESS, message: "FastCall updated successfully", data: fastCall });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -89,11 +91,27 @@ const updateFastCall = async (req, res) => {
 const deleteFastCall = async (req, res) => {
     try {
         const fastCall = await FastCall.findByIdAndDelete(req.params.id);
-        if (!fastCall) return res.status(404).json({ error: "FastCall not found" });
+        if (!fastCall) return res.status(404).json({status : httpStatusText.FAIL, error: "FastCall not found" });
 
-        res.status(200).json({ message: "FastCall deleted successfully" });
+        res.status(200).json({status : httpStatusText.SUCCESS, message: "FastCall deleted successfully" });
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error", details: error });
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
+    }
+};
+
+const getFastCallByUser = async (req, res) => {
+    try {
+        const { userid } = req.params;
+
+        const fastCalls = await emergencyModel.find({ user: userid , emergencyType:'fastcall' }).lean();
+
+        if (!fastCalls.length) {
+            return res.status(404).json({status : httpStatusText.FAIL, message: "No FastCalls found for this user" });
+        }
+
+        res.status(200).json({status : httpStatusText.SUCCESS, data: fastCalls });
+    } catch (error) {
+        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
@@ -102,5 +120,6 @@ module.exports = {
     getAllFastCalls,
     getFastCallById,
     updateFastCall,
-    deleteFastCall
+    deleteFastCall,
+    getFastCallByUser
 };
