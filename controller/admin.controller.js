@@ -7,8 +7,8 @@ const createAdmin =  async(req,res,next)=>{
         const {name, email , password ,adminType ,phoneNumber} = req.body;
         const hashedPassword = await bcrypt.hash(password,10);
         const addNewAdmin = new admindb({name,email,password:hashedPassword,avatar:req.file.filename,adminType,phoneNumber});
-        const token = await generateToken({ email:email,name,phoneNumber , id: addNewuser._id})
-        addNewAdmin.token = token;
+        // const token = await generateToken({ email:email,name,phoneNumber , id: addNewuser._id})
+        // addNewAdmin.token = token;
         await addNewAdmin.save();
         res.status(201).json({ status: httpStatusText.SUCCESS, data: { addNewAdmin } });
     } catch (error) {
@@ -27,7 +27,7 @@ const login =  async(req,res,next)=>{
         if(!passwordCompare){
             res.status(404).json({ status: httpStatusText.FAIL, message: "password" });
         }
-        const token = await generateToken({email: email , id: user._id, role : "user"});
+        // const token = await generateToken({email: email , id: user._id, role : "user"});
         await admindb.findByIdAndUpdate(admin._id, { token });
         res.status(200).json({status: httpStatusText.SUCCESS, data: {
             fullname : admin.fullname,
