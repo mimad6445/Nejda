@@ -27,13 +27,14 @@ const userRoutes = require('./router/user.router')
 const fastcallRoutes = require('./router/fastcall.router')
 const raportRoutes = require('./router/raport.router')
 const msgRoutes = require('./router/msg.router')
-
+const emergencyRoutes = require('./router/emergency.model')
 
 app.use('/api/admin',adminRoutes)
 app.use('/api/user',userRoutes)
 app.use('/api/fastcall',fastcallRoutes)
 app.use('/api/raport',raportRoutes)
 app.use('/api/msg',msgRoutes)
+app.use('/api/emergency',emergencyRoutes)
 app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 
 //Handling Routes Error

@@ -62,9 +62,9 @@ const login = async(req,res)=>{
         }
         // const token = await generateToken({email: email , id: user._id, role : "user"});
         await userdb.findByIdAndUpdate(user._id, { token });
-        res.status(200).json({status: httpStatusText.SUCCESS, data: {email : email,token : token}})
+        return res.status(200).json({status: httpStatusText.SUCCESS, data: {email : email,token : token}})
     } catch (error) {
-        res.status(500).json({status: httpStatusText.ERROR, message: 'Internal server error',error: error});
+        return res.status(500).json({status: httpStatusText.ERROR, message: 'Internal server error',error: error});
     }
 }
 
@@ -75,7 +75,7 @@ const deleteuser = async(req,res,next)=>{
         return res.status(404).json({ success: httpStatusText.FAIL, message: "user n'exist pas" });
     }
     await userdb.findByIdAndDelete(userId);
-    res.status(200).json({ success: httpStatusText.SUCCESS, message: 'user deleted successfully' });
+    return res.status(200).json({ success: httpStatusText.SUCCESS, message: 'user deleted successfully' });
 }
 
 const updateuser = async(req,res,next)=>{
@@ -86,9 +86,9 @@ const updateuser = async(req,res,next)=>{
         if (!user) {
             return res.status(404).json({ success: httpStatusText.FAIL, message: 'user not found' });
         }
-        res.status(200).json({ success: httpStatusText.SUCCESS, message: 'user updated successfully', data : {user} });
+        return res.status(200).json({ success: httpStatusText.SUCCESS, message: 'user updated successfully', data : {user} });
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' });
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' });
     }
 }
 
@@ -109,9 +109,9 @@ const virefyOtpPhone = async(req,res,next)=>{
 const allUsers = async(req,res,next)=>{
     try {
         const users = await userdb.find().lean();
-        res.status(200).json({ success: httpStatusText.SUCCESS, data: { users } });
+        returnres.status(200).json({ success: httpStatusText.SUCCESS, data: { users } });
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' });
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' });
     }
 }
 
@@ -132,9 +132,9 @@ const addImageToUser = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ success: httpStatusText.FAIL, message: 'User not found' });
         }
-        res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Image added successfully', user });
+        return res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Image added successfully', user });
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error', error });
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error', error });
     }
 };
 

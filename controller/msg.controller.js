@@ -9,7 +9,7 @@ const createMsg = async (req, res) => {
         const userid = req.params.userid;
             const user = await userdb.findById(userid);
                 if(!user){
-                    res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
+                    return res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
                 }
         const { emergencyType, msg, injured, inTheSence } = req.body;
 
@@ -34,9 +34,9 @@ const createMsg = async (req, res) => {
         await newEmergency.save();
         await newMsg.save();
         io.emit('newFact', newMsg);
-        res.status(201).json({status: httpStatusText.SUCCESS, message: "Message created successfully", data: newMsg });
+        return res.status(201).json({status: httpStatusText.SUCCESS, message: "Message created successfully", data: newMsg });
     } catch (error) {
-        res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
@@ -44,9 +44,9 @@ const createMsg = async (req, res) => {
 const getAllMsgs = async (req, res) => {
     try {
         const msgs = await Msg.find().lean();
-        res.status(200).json({status: httpStatusText.SUCCESS, data: msgs });
+        return res.status(200).json({status: httpStatusText.SUCCESS, data: msgs });
     } catch (error) {
-        res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
@@ -56,9 +56,9 @@ const getMsgById = async (req, res) => {
         const msg = await Msg.findById(req.params.id);
         if (!msg) return res.status(404).json({status: httpStatusText.FAIL, error: "Message not found" });
 
-        res.status(200).json({status: httpStatusText.SUCCESS, data: msg });
+        return res.status(200).json({status: httpStatusText.SUCCESS, data: msg });
     } catch (error) {
-        res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
@@ -75,9 +75,9 @@ const updateMsg = async (req, res) => {
 
         if (!updatedMsg) return res.status(404).json({status: httpStatusText.FAIL, error: "Message not found" });
 
-        res.status(200).json({status: httpStatusText.SUCCESS, message: "Message updated successfully", data: updatedMsg });
+        return res.status(200).json({status: httpStatusText.SUCCESS, message: "Message updated successfully", data: updatedMsg });
     } catch (error) {
-        res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
@@ -87,9 +87,9 @@ const deleteMsg = async (req, res) => {
         const msg = await Msg.findByIdAndDelete(req.params.id);
         if (!msg) return res.status(404).json({status: httpStatusText.FAIL, error: "Message not found" });
 
-        res.status(200).json({status: httpStatusText.SUCCESS, message: "Message deleted successfully" });
+        return res.status(200).json({status: httpStatusText.SUCCESS, message: "Message deleted successfully" });
     } catch (error) {
-        res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status: httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
@@ -103,9 +103,9 @@ const getMsgByUser = async (req, res) => {
             return res.status(404).json({status : httpStatusText.FAIL, message: "No messages found for this user" });
         }
 
-        res.status(200).json({status : httpStatusText.SUCCESS, data: messages });
+        return res.status(200).json({status : httpStatusText.SUCCESS, data: messages });
     } catch (error) {
-        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 

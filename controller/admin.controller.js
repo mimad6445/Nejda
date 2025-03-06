@@ -10,9 +10,9 @@ const createAdmin =  async(req,res,next)=>{
         // const token = await generateToken({ email:email,name,phoneNumber , id: addNewuser._id})
         // addNewAdmin.token = token;
         await addNewAdmin.save();
-        res.status(201).json({ status: httpStatusText.SUCCESS, data: { addNewAdmin } });
+        return res.status(201).json({ status: httpStatusText.SUCCESS, data: { addNewAdmin } });
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
     }
 }
 
@@ -21,7 +21,7 @@ const login =  async(req,res,next)=>{
         const {email,password} = req.body;
         const admin = await admindb.findOne({email : email}).lean();
         if(!admin){
-            res.status(404).json({ status: httpStatusText.FAIL, message: "email n'exist pas" });
+            return res.status(404).json({ status: httpStatusText.FAIL, message: "email n'exist pas" });
         }
         const passwordCompare = await bcrypt.compare(password,admin.password);
         if(!passwordCompare){
@@ -29,23 +29,23 @@ const login =  async(req,res,next)=>{
         }
         // const token = await generateToken({email: email , id: user._id, role : "user"});
         await admindb.findByIdAndUpdate(admin._id, { token });
-        res.status(200).json({status: httpStatusText.SUCCESS, data: {
+        return res.status(200).json({status: httpStatusText.SUCCESS, data: {
             fullname : admin.fullname,
             email : email,
             avatar : admin.avatar,
             token : token
         }})
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
     }
 }
 
 const getAllAdmin =  async(req,res,next)=>{
     try {
         const admins = await admindb.find().lean(); 
-        res.status(200).json({status: httpStatusText.SUCCESS, admins}); 
+        return res.status(200).json({status: httpStatusText.SUCCESS, admins}); 
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
     }
 }
 
@@ -57,9 +57,9 @@ const deleteAdmin =  async(req,res,next)=>{
             return res.status(404).json({ success: httpStatusText.FAIL, message: "admin n'exist pas" });
         }
         await admindb.findByIdAndDelete(adminId);
-        res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Admin deleted successfully' });
+        return res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Admin deleted successfully' });
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' , error});
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' , error});
     }
 }
 
@@ -71,9 +71,9 @@ const updateAdmin = async (req, res) => {
         if (!admin) {
             return res.status(404).json({ success: httpStatusText.FAIL, message: 'Admin not found' });
         }
-        res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Admin updated successfully', data : {admin} });
+        return res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Admin updated successfully', data : {admin} });
     } catch (error) {
-        res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' });
+        return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' });
     }
 };
 

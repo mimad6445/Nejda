@@ -9,7 +9,7 @@ const createFastCall = async (req, res) => {
         const io = req.app.get('socketio');
         const user = await userdb.findById(userid);
             if(!user){
-                res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
+                return res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
             }
         
         const imageFiles = req.files["image"] ? req.files["image"].map(file => file.filename) : [];
@@ -33,10 +33,10 @@ const createFastCall = async (req, res) => {
         await newEmergency.save();
         await newFastCall.save();
         io.emit('newFact', newFastCall);
-        res.status(201).json({status :httpStatusText.SUCCESS, message: "FastCall created successfully", data: newFastCall });
+        return res.status(201).json({status :httpStatusText.SUCCESS, message: "FastCall created successfully", data: newFastCall });
     } catch (error) {
         console.log(error);
-        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
+        return res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -44,9 +44,10 @@ const createFastCall = async (req, res) => {
 const getAllFastCalls = async (req, res) => {
     try {
         const fastCalls = await FastCall.find().lean();
-        res.status(200).json({status : httpStatusText.SUCCESS, data: fastCalls });
+        return res.status(200).json({status : httpStatusText.SUCCESS, data: fastCalls });
     } catch (error) {
-        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
+        console.log(error);
+        return res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -56,9 +57,9 @@ const getFastCallById = async (req, res) => {
         const fastCall = await FastCall.findById(req.params.id);
         if (!fastCall) return res.status(404).json({ status : httpStatusText.FAIL , error: "FastCall not found" });
 
-        res.status(200).json({ status : httpStatusText.SUCCESS , data: fastCall });
+        return res.status(200).json({ status : httpStatusText.SUCCESS , data: fastCall });
     } catch (error) {
-        res.status(500).json({ status : httpStatusText.ERROR , error: "Internal Server Error", details: error });
+        return res.status(500).json({ status : httpStatusText.ERROR , error: "Internal Server Error", details: error });
     }
 };
 
@@ -81,9 +82,9 @@ const updateFastCall = async (req, res) => {
         fastCall.video = videoFile;
 
         await fastCall.save();
-        res.status(200).json({status : httpStatusText.SUCCESS, message: "FastCall updated successfully", data: fastCall });
+        return res.status(200).json({status : httpStatusText.SUCCESS, message: "FastCall updated successfully", data: fastCall });
     } catch (error) {
-        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
+        return res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -93,9 +94,9 @@ const deleteFastCall = async (req, res) => {
         const fastCall = await FastCall.findByIdAndDelete(req.params.id);
         if (!fastCall) return res.status(404).json({status : httpStatusText.FAIL, error: "FastCall not found" });
 
-        res.status(200).json({status : httpStatusText.SUCCESS, message: "FastCall deleted successfully" });
+        return res.status(200).json({status : httpStatusText.SUCCESS, message: "FastCall deleted successfully" });
     } catch (error) {
-        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
+        return res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error });
     }
 };
 
@@ -109,9 +110,9 @@ const getFastCallByUser = async (req, res) => {
             return res.status(404).json({status : httpStatusText.FAIL, message: "No FastCalls found for this user" });
         }
 
-        res.status(200).json({status : httpStatusText.SUCCESS, data: fastCalls });
+        return res.status(200).json({status : httpStatusText.SUCCESS, data: fastCalls });
     } catch (error) {
-        res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
+        return res.status(500).json({status : httpStatusText.ERROR, error: "Internal Server Error", details: error.message });
     }
 };
 
