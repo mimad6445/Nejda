@@ -62,7 +62,7 @@ const login = async(req,res)=>{
         }
         // const token = await generateToken({email: email , id: user._id, role : "user"});
         // await userdb.findByIdAndUpdate(user._id, { token });
-        return res.status(200).json({status: httpStatusText.SUCCESS, msg : "user login success" , data: {id:user._id,email : email}})
+        return res.status(200).json({status: httpStatusText.SUCCESS, msg : "user login success" , data: {id:user._id,email : email,fullName : user.fullName,phoneNumber : user.phoneNumber}});
     } catch (error) {
         console.log(error);
         return res.status(500).json({status: httpStatusText.ERROR, message: 'Internal server error',error: error});

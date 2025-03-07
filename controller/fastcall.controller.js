@@ -18,12 +18,15 @@ const createFastCall = async (req, res) => {
         const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : "";
         const videoFile = req.files["video"] ? req.files["video"][0].filename : "";
         
-        
+        if(!req.body.Needs){
+            return res.status(400).json({status : httpStatusText.FAIL, message: "Needs is required" });
+        }
 
         const newFastCall = new FastCall({
             image: imageFiles,
             vocal: vocalFile,
-            video: videoFile
+            video: videoFile,
+            Needs : req.body.Needs,
         });
         
         const newEmergency = new emergencyModel({

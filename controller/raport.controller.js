@@ -11,9 +11,12 @@ const createRaport = async (req, res) => {
             if(!user){
                 return res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
             }
-
+        if(!req.body.description || !req.body.Needs){
+            return res.status(400).json({status : httpStatusText.FAIL, message: "description is required" });
+        }
         const newRaport = new Raport({
             description: req.body.description,
+            Needs : req.body.Needs,
         });
         const newEmergency = new emergencyModel({
             emergencyType : "raport",

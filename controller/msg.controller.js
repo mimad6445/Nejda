@@ -11,10 +11,10 @@ const createMsg = async (req, res) => {
                 if(!user){
                     return res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
                 }
-        const { emergencyType, msg, injured, inTheSence } = req.body;
+        const { emergencyType, msg, injured, inTheSence , Needs } = req.body;
 
         // Validate required fields
-        if (emergencyType === undefined ||injured === undefined || inTheSence === undefined) {
+        if (emergencyType === undefined ||injured === undefined || inTheSence === undefined || Needs === undefined) {
             return res.status(400).json({ status: httpStatusText.FAIL, error: "injured and inTheSence fields are required" });
         }
 
@@ -22,7 +22,8 @@ const createMsg = async (req, res) => {
             emergencyType,
             msg,
             injured,
-            inTheSence
+            inTheSence,
+            Needs
         });
         const newEmergency = new emergencyModel({
             emergencyType : "msg",

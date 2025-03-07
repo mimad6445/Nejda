@@ -7,6 +7,7 @@ const msgSchema = mongoose.Schema({
         required: true
     },
     msg : {type : String},
+    Needs : {type : String, enum: ['الشرطة', 'الدرك', 'إسعاف']},
     injured : {type : Boolean, require : true},
     inTheSence : {type : Boolean, require : true},
 },{timestamps: true})
