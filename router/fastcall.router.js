@@ -4,7 +4,7 @@ const fastCallController = require("../controller/fastcall.controller");
 const upload = require("../middlewares/uoload");
 
 router.route('/')
-        .get(fastCallController.createFastCall)
+        .get(fastCallController.getAllFastCalls)
 
 
 router.route('/:userid')
