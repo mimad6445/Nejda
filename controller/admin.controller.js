@@ -6,12 +6,14 @@ const createAdmin =  async(req,res,next)=>{
     try {
         const {name, email , password ,adminType ,phoneNumber} = req.body;
         const hashedPassword = await bcrypt.hash(password,10);
-        const addNewAdmin = new admindb({name,email,password:hashedPassword,avatar:req.file.filename,adminType,phoneNumber});
+        const addNewAdmin = new admindb({name,email,password:hashedPassword,adminType,phoneNumber});
         // const token = await generateToken({ email:email,name,phoneNumber , id: addNewuser._id})
         // addNewAdmin.token = token;
         await addNewAdmin.save();
         return res.status(201).json({ status: httpStatusText.SUCCESS, data: { addNewAdmin } });
     } catch (error) {
+        console.log("error",error);
+        
         return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
     }
 }
@@ -28,14 +30,16 @@ const login =  async(req,res,next)=>{
             res.status(404).json({ status: httpStatusText.FAIL, message: "password" });
         }
         // const token = await generateToken({email: email , id: user._id, role : "user"});
-        await admindb.findByIdAndUpdate(admin._id, { token });
+        // await admindb.findByIdAndUpdate(admin._id, { token });
         return res.status(200).json({status: httpStatusText.SUCCESS, data: {
-            fullname : admin.fullname,
+            id:admin._id,
+            fullname : admin.name,
             email : email,
             avatar : admin.avatar,
-            token : token
         }})
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error' ,error});
     }
 }

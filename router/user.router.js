@@ -30,8 +30,8 @@ const upload = multer({
 
 router.post('/register',upload.single('image'),controller.registerUser)
 router.post('/login',controller.login)
-router.patch('/profile/:id',controller.updateuser)
-router.delete('/profile/:id',controller.deleteuser)
+router.patch('/:id',controller.updateuser)
+router.delete('/:id',controller.deleteuser)
 
 router.route('/phoneOtp')
         .post(controller.otpLoginPhone);

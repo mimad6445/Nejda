@@ -11,12 +11,15 @@ const createFastCall = async (req, res) => {
             if(!user){
                 return res.status(404).json({ status: httpStatusText.FAIL, message: "user not exist" });
             }
-        
+            if(!req.files){
+                return res.status(400).json({status : httpStatusText.FAIL, message: "At least one file is required" });
+            }
         const imageFiles = req.files["image"] ? req.files["image"].map(file => file.filename) : [];
         const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : "";
         const videoFile = req.files["video"] ? req.files["video"][0].filename : "";
         
         
+
         const newFastCall = new FastCall({
             image: imageFiles,
             vocal: vocalFile,
