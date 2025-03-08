@@ -16,7 +16,7 @@ const createFastCall = async (req, res) => {
         const vocalFile = req.files["vocal"] ? req.files["vocal"][0].filename : "";
         const videoFile = req.files["video"] ? req.files["video"][0].filename : "";
         
-        if(!vocalFile || !videoFile || imageFiles.length === 0){
+        if(!vocalFile && !videoFile && imageFiles.length === 0){
             return res.status(400).json({status : httpStatusText.FAIL, message: "At least one file is required" });
         }
         
