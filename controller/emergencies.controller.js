@@ -47,11 +47,35 @@ const getEmergenciesByNeed = async (req, res, needType) => {
     }
 };
 
+const confirmeEmergency = async (req, res) => {
+    try {
+        const { emergencyId } = req.params;
+
+        // Find the emergency by ID
+        const emergency = await emergencyModel.findById(emergencyId);
+        if (!emergency) {
+            return res.status(404).json({ status: "FAIL", message: "Emergency not found" });
+        }
+
+        emergency.status = true;
+        await emergency.save();
+
+        return res.status(200).json({ 
+            status: "SUCCESS", 
+            message: "Emergency confirmed successfully", 
+            data: emergency 
+        });
+    } catch (error) {
+        return res.status(500).json({ status: "ERROR", error: "Internal Server Error", details: error.message });
+    }
+}
+
 module.exports = {
     getAllEmergencies,
     getAllPoliceEmergency,       // 🚔 الشرطة
     getAllGendarmerieEmergency,  // 🚓 الدرك
-    getAllAmbulanceEmergency     // 🚑 إسعاف
+    getAllAmbulanceEmergency,     // 🚑 إسعاف
+    confirmeEmergency
 };
 
 

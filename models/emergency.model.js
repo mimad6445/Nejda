@@ -6,7 +6,8 @@ const emergencySchema = mongoose.Schema({
     fastcall  : {type : mongoose.Types.ObjectId , ref : 'fastcall'},
     msg : {type : mongoose.Types.ObjectId , ref : 'msg'},
     report : {type : mongoose.Types.ObjectId , ref : 'raport'},
-    user : {type : mongoose.Types.ObjectId , ref : 'users', require : true}
+    user : {type : mongoose.Types.ObjectId , ref : 'users', require : true},
+    status :{type: Boolean,default:false}
 },{timestamps: true})
 
 emergencySchema.post("findOneAndDelete", async function (doc) {

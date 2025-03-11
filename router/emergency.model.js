@@ -14,5 +14,6 @@ router.route("/gendarmerie")
 router.route("/ambulance")
         .get(controller.getAllAmbulanceEmergency);
 
+router.patch("/confirm/:emergencyId", controller.confirmeEmergency);
 
 module.exports = router;
