@@ -21,7 +21,8 @@ const createRaport = async (req, res) => {
         const newEmergency = new emergencyModel({
             emergencyType : "raport",
             report : newRaport._id,
-            user : userid
+            user : userid,
+            Needs : req.body.Needs,
         })
         user.emergencies.push(newEmergency._id);
         await user.save();

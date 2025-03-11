@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const emergencySchema = mongoose.Schema({
     emergencyType :  {type : String, enum: ['fastcall', 'raport','msg']},
-    Needs : {type : String, enum: ['الشرطة', 'الدرك', 'إسعاف']},
-    fastcall : {type : mongoose.Types.ObjectId , ref : 'fastcall'},
+    Needs : {type : String, enum: ['الشرطة', 'الدرك', 'اسعاف']},
+    fastcall  : {type : mongoose.Types.ObjectId , ref : 'fastcall'},
     msg : {type : mongoose.Types.ObjectId , ref : 'msg'},
     report : {type : mongoose.Types.ObjectId , ref : 'raport'},
     user : {type : mongoose.Types.ObjectId , ref : 'users', require : true}

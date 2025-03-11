@@ -28,7 +28,8 @@ const createMsg = async (req, res) => {
         const newEmergency = new emergencyModel({
             emergencyType : "msg",
             msg : newMsg._id,
-            user : userid
+            user : userid,
+            Needs : req.body.Needs,
         })
         user.emergencies.push(newEmergency._id);
         await user.save();
