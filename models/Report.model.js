@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const RaportSchema = mongoose.Schema({
     description : {type : String},
-    Needs : {type : String, enum: ['الشرطة', 'الدرك', 'إسعاف']},
+    Needs : {type : String, enum: ['الشرطة', 'الدرك', 'إسعاف','اسعاف']},
 },{timestamps: true})
 
 RaportSchema.post("findOneAndDelete", async function (doc) {
