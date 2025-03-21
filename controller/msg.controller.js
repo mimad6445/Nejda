@@ -30,6 +30,7 @@ const createMsg = async (req, res) => {
             msg : newMsg._id,
             user : userid,
             Needs : req.body.Needs,
+            gps : req.body.gps,
         })
         user.emergencies.push(newEmergency._id);
         await user.save();

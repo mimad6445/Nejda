@@ -7,6 +7,7 @@ const emergencySchema = mongoose.Schema({
     msg : {type : mongoose.Types.ObjectId , ref : 'msg'},
     report : {type : mongoose.Types.ObjectId , ref : 'raport'},
     user : {type : mongoose.Types.ObjectId , ref : 'users', require : true},
+    gps : {type : String},
     status :{type: Boolean,default:false}
 },{timestamps: true})
 
