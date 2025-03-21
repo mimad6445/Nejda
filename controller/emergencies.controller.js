@@ -38,7 +38,7 @@ const getEmergenciesByNeed = async (req, res, needType) => {
             .populate("fastcall")
             .populate("msg")
             .populate("report")
-            .populate("user", "fullName email")
+            .populate("user", "fullName email phoneNumber")
             .lean();
 
         return res.status(200).json({ status: "SUCCESS", data: emergencies });
