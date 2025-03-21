@@ -28,13 +28,13 @@ const getAllGendarmerieEmergency = async (req, res) => {
 
 // 🚑 Get Ambulance Emergencies (إسعاف)
 const getAllAmbulanceEmergency = async (req, res) => {
-    await getEmergenciesByNeed(req, res, "اسعاف");
+    await getEmergenciesByNeed(req, res, ["اسعاف", "إسعاف"]);
 };
 
 // 🔍 Generic function to get emergencies based on "Needs"
 const getEmergenciesByNeed = async (req, res, needType) => {
     try {
-        const emergencies = await emergencyModel.find({ Needs: needType })
+        const emergencies = await emergencyModel.find({ Needs: { $in: needType } })
             .populate("fastcall")
             .populate("msg")
             .populate("report")
