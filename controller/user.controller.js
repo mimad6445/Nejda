@@ -10,6 +10,7 @@ const userSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters"),
     fullName: z.string().min(3),
     phoneNumber: z.string().regex(/^\d{10,15}$/, "Invalid phone number"),
+    image : z.string().optional()
 });
 
 
@@ -118,6 +119,8 @@ const allUsers = async(req,res,next)=>{
 
 const addImageToUser = async (req, res, next) => {
     try {
+        console.log("enter");
+        
         const { email } = req.body;
         if (!email) {
             return res.status(400).json({ success: httpStatusText.FAIL, message: 'Email is required' });
@@ -135,6 +138,7 @@ const addImageToUser = async (req, res, next) => {
         }
         return res.status(200).json({ success: httpStatusText.SUCCESS, message: 'Image added successfully', user });
     } catch (error) {
+        console.log("error", error);
         return res.status(500).json({ success: httpStatusText.ERROR, message: 'Internal server error', error });
     }
 };
