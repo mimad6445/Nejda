@@ -41,9 +41,6 @@ const uploadSingleImage = (req, res, next) => {
                 } else if (err) {
                         return res.status(500).json({ message: "Unknown upload error", error: err.message });
                 }
-                if (!req.file) {
-                        return res.status(400).json({ message: "No single image file uploaded" });
-                }
                 next();
         });
 };
