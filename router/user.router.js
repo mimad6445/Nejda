@@ -33,19 +33,30 @@ const upload = multer({
         fileFilter: fileFilter
 });
 
+const uploadSingleImage = (req, res, next) => {
+        const uploader = upload.single("image");
+        uploader(req, res, function (err) {
+                if (err instanceof multer.MulterError) {
+                        return res.status(400).json({ message: "Multer error", error: err.message });
+                } else if (err) {
+                        return res.status(500).json({ message: "Unknown upload error", error: err.message });
+                }
+                if (!req.file) {
+                        return res.status(400).json({ message: "No single image file uploaded" });
+                }
+                next();
+        });
+};
+
 // Define routes
-router.post('/register', upload.single('image'), controller.registerUser);
+router.post('/register', uploadSingleImage, controller.registerUser);
 router.post('/login', controller.login);
 router.get('/all', controller.allUsers);
 
 // Route for adding an image to user
-router.patch('/addImage', upload.single('image'), (req, res) => {
-        // Check if file was uploaded successfully
-        if (!req.file) {
-                return res.status(400).json({ message: 'No file uploaded' });
-        }
-        // Assuming you are passing it to the controller
-        controller.addImageToUser(req, res);  // Call your controller method
+router.patch('/addImage', uploadSingleImage, (req, res) => {
+        console.log("File uploaded successfully:", req.file.filename);
+        controller.addImageToUser(req, res);
 });
 
 router.patch('/:id', controller.updateuser);
