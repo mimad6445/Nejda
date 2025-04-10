@@ -73,6 +73,7 @@ const confirmeEmergency = async (req, res) => {
 const allConfiremedEmergency = async (req, res) => {
     try {
         const emergencies = await emergencyModel.find({ status: true })
+            .sort({ updatedAt: -1 })
             .populate("fastcall")
             .populate("msg")
             .populate("report")
