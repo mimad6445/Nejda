@@ -77,7 +77,7 @@ const allConfiremedEmergency = async (req, res) => {
             .populate("fastcall")
             .populate("msg")
             .populate("report")
-            .populate("user", "fullName email phoneNumber")
+            .populate("user", "fullName email phoneNumber image")
             .lean();
 
         return res.status(200).json({ status: "SUCCESS", data: emergencies });
