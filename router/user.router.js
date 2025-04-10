@@ -30,7 +30,7 @@ const fileFilter = (req, file, cb) => {
 // Initialize multer with storage and fileFilter
 const upload = multer({ 
         storage: diskStorage,
-        fileFilter: fileFilter
+        // fileFilter: fileFilter
 });
 
 const uploadSingleImage = (req, res, next) => {
