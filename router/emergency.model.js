@@ -5,6 +5,9 @@ const controller = require("../controller/emergencies.controller");
 router.route("/") 
         .get(controller.getAllEmergencies);
 
+router.route('/allConfiremed')
+        .get(controller.allConfiremedEmergency)
+
 router.route("/police")
         .get(controller.getAllPoliceEmergency);
 

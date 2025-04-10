@@ -70,12 +70,28 @@ const confirmeEmergency = async (req, res) => {
     }
 }
 
+const allConfiremedEmergency = async (req, res) => {
+    try {
+        const emergencies = await emergencyModel.find({ status: true })
+            .populate("fastcall")
+            .populate("msg")
+            .populate("report")
+            .populate("user", "fullName email phoneNumber")
+            .lean();
+
+        return res.status(200).json({ status: "SUCCESS", data: emergencies });
+    } catch (error) {
+        return res.status(500).json({ status: "ERROR", error: "Internal Server Error", details: error.message });
+    }
+};
+
 module.exports = {
     getAllEmergencies,
     getAllPoliceEmergency,       // 🚔 الشرطة
     getAllGendarmerieEmergency,  // 🚓 الدرك
     getAllAmbulanceEmergency,     // 🚑 إسعاف
-    confirmeEmergency
+    confirmeEmergency,
+    allConfiremedEmergency
 };
 
 
